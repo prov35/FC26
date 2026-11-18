@@ -22,7 +22,7 @@ h1 span{color:var(--acc)}
 .stage{text-align:center;min-width:0}
 .turn{font-size:15px;color:var(--mut);margin:8px 0 18px}
 .turn b{color:var(--c);font-size:20px}
-.cards{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-bottom:22px}.cards .card{flex:0 0 calc(20% - 10px);max-width:260px;min-width:0}
+.cards{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-bottom:24px}.cards .card{flex:0 0 calc((20% - 10px) * var(--k));max-width:calc(260px * var(--k));min-width:0}
 .card{--g1:#e9d27a;--g2:#9c7a1f;position:relative;border-radius:16px;padding:14px 10px 12px;background:linear-gradient(160deg,var(--g1),var(--g2));color:#1a1405;cursor:pointer;text-align:center;animation:flip .6s both;animation-delay:calc(var(--i)*.12s);transition:transform .2s,filter .3s,opacity .3s;border:none;font:inherit}
 .card:hover:not(.dim):not(.locked){transform:translateY(-6px) scale(1.03)}
 .card.t3{--g1:#c9a6ff;--g2:#4b2a96;color:#fff}
@@ -66,8 +66,8 @@ button.b.alt:hover{border-color:var(--acc)}
 .num button.on{background:var(--acc);color:#03241a;border-color:var(--acc)}
 .names{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
 .names input{font:inherit;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:#0d1324;color:var(--txt);border-left:5px solid var(--c);min-width:0}
-@media(max-width:900px){.cards .card{flex-basis:calc(33.333% - 8px)}}
-@media(max-width:560px){.cards .card{flex-basis:calc(50% - 6px)}.wrap{padding:8px 10px}.names{grid-template-columns:1fr}.row{grid-template-columns:38px 1fr 26px;font-size:12px}}
+@media(max-width:900px){.cards .card{flex-basis:calc((33.333% - 8px) * var(--k))}}
+@media(max-width:560px){.cards .card{flex-basis:calc((50% - 6px) * var(--k))}.wrap{padding:8px 10px}.names{grid-template-columns:1fr}.row{grid-template-columns:38px 1fr 26px;font-size:12px}}
 
 .eye{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:#0000002e;color:inherit;transition:.2s;padding:0}
 .eye:hover{background:#00000055;transform:scale(1.12)}
@@ -130,13 +130,14 @@ button.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .back{position:absolute;inset:0;z-index:3;border-radius:inherit;background:radial-gradient(circle at 50% 40%,#5b25b8 0%,#24104f 40%,#08040f 80%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;overflow:hidden;box-shadow:inset 0 0 0 2px #b084ff88,inset 0 0 40px #7a3df055}
 .back::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#d9bcff66 48%,transparent 62%);background-size:260% 100%;background-position:130% 0;animation:shine 3s ease-in-out infinite;pointer-events:none}
 .wc{font-weight:900;letter-spacing:.14em;font-size:clamp(11px,1.15vw,15px);text-align:center;line-height:1.25;color:#efe3ff;text-shadow:0 0 12px #9b5cff;position:relative}
-.card{aspect-ratio:5/7;container-type:inline-size;display:flex;flex-direction:column;align-items:stretch;padding:6cqw 5cqw 5cqw}
-.card .ovr{font-size:max(22cqw,30px)}
+.card{aspect-ratio:5/7;container-type:inline-size;display:flex;flex-direction:column;align-items:stretch;padding:0}
+.ci{display:flex;flex-direction:column;align-items:stretch;flex:1;min-height:0;padding:9cqw 5cqw 6cqw}
+.card .ovr{font-size:max(20cqw,30px)}
 .card .pos{font-size:max(8cqw,12px);margin-top:1cqw}
 .card .nm{font-size:max(10.5cqw,13px);margin:0;min-height:0;flex:1;padding:2cqw 0}
-.card .st{font-size:max(7cqw,11px);gap:1cqw 6cqw;padding-top:3cqw}
+.card .st{font-size:max(7.4cqw,11px);gap:1cqw 6cqw;padding-top:3cqw}
 .card .wc{font-size:max(8.5cqw,12px)}
-.cards.wcs .card{flex:0 0 clamp(200px,24vw,300px);max-width:none}
+.cards.wcs .card{flex:0 0 clamp(176px,21vw,264px);max-width:none}
 .cf{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
 .card .nm{overflow-wrap:normal;word-break:normal;margin:0 -2cqw;padding:2cqw 0}
 .card .nm span{display:block}
@@ -155,7 +156,8 @@ button.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
 @keyframes twk{to{opacity:.15}}
 .card.ld .back{animation:ldp .8s ease-in-out infinite alternate}
 @keyframes ldp{to{filter:brightness(1.5)}}
-.pface{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><g fill='%23ffffff' fill-opacity='.34'><path d='M16 12L18.4 16L16 20L13.6 16Z'/><path d='M0 -4L2.4 0L0 4L-2.4 0Z'/><path d='M32 -4L34.4 0L32 4L29.6 0Z'/><path d='M0 28L2.4 32L0 36L-2.4 32Z'/><path d='M32 28L34.4 32L32 36L29.6 32Z'/><circle cx='16' cy='0' r='1'/><circle cx='16' cy='32' r='1'/><circle cx='0' cy='16' r='1'/><circle cx='32' cy='16' r='1'/></g></svg>") center/32px 32px,radial-gradient(circle at 50% 58%,#ffffff40 0,#ffffff00 62%),linear-gradient(160deg,#c9a6ff,#4b2a96)}
+.pface{background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 420' preserveAspectRatio='none'><path d='M218 80L226 92L218 105L210 92Z' fill='%23e9dcff' fill-opacity='0.26'/><path d='M69 232Q69 250 86 250Q69 250 69 268Q69 250 51 250Q69 250 69 232Z' fill='%23fff' fill-opacity='0.45'/><circle cx='28' cy='319' r='5.3' fill='%23fff' fill-opacity='0.26'/><path d='M223 14Q223 29 237 29Q223 29 223 43Q223 29 209 29Q223 29 223 14Z' fill='%23fff' fill-opacity='0.24'/><circle cx='201' cy='211' r='2.6' fill='%23fff' fill-opacity='0.4'/><circle cx='187' cy='390' r='4.1' fill='%23fff' fill-opacity='0.46'/><path d='M284 158Q284 174 301 174Q284 174 284 191Q284 174 268 174Q284 174 284 158Z' fill='%23fff' fill-opacity='0.4'/><circle cx='245' cy='323' r='13' fill='none' stroke='%23fff' stroke-opacity='0.45' stroke-width='2'/><path d='M280 8Q280 23 296 23Q280 23 280 39Q280 23 265 23Q280 23 280 8Z' fill='%23fff' fill-opacity='0.28'/><circle cx='271' cy='100' r='2.5' fill='%23fff' fill-opacity='0.36'/><circle cx='244' cy='391' r='5.2' fill='%23fff' fill-opacity='0.49'/><path d='M113 330L118 340L113 349L107 340Z' fill='%23e9dcff' fill-opacity='0.23'/><path d='M20 384Q20 396 32 396Q20 396 20 407Q20 396 9 396Q20 396 20 384Z' fill='%23fff' fill-opacity='0.43'/><circle cx='46' cy='29' r='7' fill='none' stroke='%23fff' stroke-opacity='0.28' stroke-width='2'/><path d='M14 241L20 250L14 259L9 250Z' fill='%23e9dcff' fill-opacity='0.47'/><path d='M167 318Q167 335 184 335Q167 335 167 352Q167 335 150 335Q167 335 167 318Z' fill='%23fff' fill-opacity='0.3'/><circle cx='130' cy='217' r='14' fill='none' stroke='%23fff' stroke-opacity='0.37' stroke-width='2'/><path d='M24 152Q24 173 46 173Q24 173 24 194Q24 173 3 173Q24 173 24 152Z' fill='%23fff' fill-opacity='0.41'/><path d='M162 34Q162 53 181 53Q162 53 162 72Q162 53 143 53Q162 53 162 34Z' fill='%23fff' fill-opacity='0.31'/><circle cx='120' cy='25' r='7' fill='none' stroke='%23fff' stroke-opacity='0.28' stroke-width='2'/><circle cx='93' cy='182' r='4.4' fill='%23fff' fill-opacity='0.29'/><circle cx='30' cy='79' r='7' fill='none' stroke='%23fff' stroke-opacity='0.44' stroke-width='2'/><circle cx='96' cy='70' r='5.1' fill='%23fff' fill-opacity='0.28'/><path d='M184 265Q184 281 200 281Q184 281 184 298Q184 281 167 281Q184 281 184 265Z' fill='%23fff' fill-opacity='0.39'/><path d='M280 225Q280 242 297 242Q280 242 280 259Q280 242 263 242Q280 242 280 225Z' fill='%23fff' fill-opacity='0.37'/><path d='M84 379L90 388L84 397L79 388Z' fill='%23e9dcff' fill-opacity='0.38'/><circle cx='178' cy='134' r='12' fill='none' stroke='%23fff' stroke-opacity='0.24' stroke-width='2'/><circle cx='117' cy='266' r='2.6' fill='%23fff' fill-opacity='0.43'/><path d='M236 248Q236 269 257 269Q236 269 236 290Q236 269 215 269Q236 269 236 248Z' fill='%23fff' fill-opacity='0.33'/><path d='M76 290Q76 305 91 305Q76 305 76 319Q76 305 62 305Q76 305 76 290Z' fill='%23fff' fill-opacity='0.4'/><circle cx='134' cy='404' r='5.4' fill='%23fff' fill-opacity='0.35'/><circle cx='120' cy='121' r='3.6' fill='%23fff' fill-opacity='0.24'/><circle cx='287' cy='353' r='10' fill='none' stroke='%23fff' stroke-opacity='0.35' stroke-width='2'/><path d='M231 157Q231 169 243 169Q231 169 231 181Q231 169 218 169Q231 169 231 157Z' fill='%23fff' fill-opacity='0.39'/></svg>") center/100% 100% no-repeat,radial-gradient(circle at 50% 58%,#ffffff40 0,#ffffff00 62%),linear-gradient(160deg,#c9a6ff,#4b2a96)}
+:root{--k:.88}
 </style></head><body>
 <header><h1>FC26 <span>PACK DRAFT</span></h1><div class="sub">Open a pack, pick one player, build your squad.</div></header>
 <div class="wrap" id="app"></div><div id="modal"></div>
@@ -192,8 +194,8 @@ function card(p,i){const hid=p.tier===0&&!S.rev.has(p.i);const t='k'+p.tier+([0,
  const cls=S.pick?(S.pick===p.id?'won':'dim'):'';
  return `<div id="c${p.i}" class="card ${t} ${cls} ${S.pick?'locked':''}" style="--i:${i}" ${S.pick?'':`onclick="cardClick(${p.i})"`}>${hid?BACK:''}
  <button class="eye" title="Inspect player" aria-label="Inspect ${esc(p.name)}" onclick="event.stopPropagation();inspect(${p.i})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
- <div class="ovr">${p.ovr}</div><div class="pos">${p.pos}</div><div class="nm"><span>${esc(p.name)}</span></div>
- <div class="st">${p.st.map((v,k)=>`<span>${L[k]} <em>${v}</em></span>`).join('')}</div></div>`}
+ <div class="ci"><div class="ovr">${p.ovr}</div><div class="pos">${p.pos}</div><div class="nm"><span>${esc(p.name)}</span></div>
+ <div class="st">${p.st.map((v,k)=>`<span>${L[k]} <em>${v}</em></span>`).join('')}</div></div></div>`}
 const BACK=`<div class="back"><svg viewBox="0 0 100 100" width="78%" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3e8ff"/><stop offset="1" stop-color="#9b5cff"/></linearGradient></defs><g stroke="#b084ff" stroke-width=".6" opacity=".55">${Array.from({length:24},(_,k)=>{const a=k*Math.PI/12;return `<line x1="${50+14*Math.cos(a)}" y1="${50+14*Math.sin(a)}" x2="${50+48*Math.cos(a)}" y2="${50+48*Math.sin(a)}"/>`}).join('')}</g><circle cx="50" cy="50" r="34" fill="none" stroke="#b084ff" stroke-width="1" opacity=".6"/><circle cx="50" cy="50" r="24" fill="#12082a" stroke="url(#gg)" stroke-width="2"/><polygon points="50,28 55.3,42.7 70.9,43.2 58.6,52.8 63,67.8 50,59 37,67.8 41.4,52.8 29.1,43.2 44.7,42.7" fill="url(#gg)"/></svg><div class="wc">WORLD CLASS<br>PLAYER</div></div>`;
 const IMG_DIRS=['FC Photos/','FC photos/','fc photos/','FC26 Photos/','FC26 photos/','images/'],IMGURL={},IMGP={};let IMGHIT=null;
 function imgUrls(n){const fm=[n,n.replace(/ /g,'_'),n.replace(/ /g,'_').replace(/\./g,'')];const dirs=IMGHIT?[IMGHIT.d,...IMG_DIRS.filter(x=>x!==IMGHIT.d)]:IMG_DIRS;const fo=IMGHIT?[IMGHIT.f,...[0,1,2].filter(x=>x!==IMGHIT.f)]:[0,1,2];const o=[];for(const d of dirs)for(const f of fo)for(const z of new Set([fm[f].normalize('NFC'),fm[f].normalize('NFD')]))o.push({u:d+encodeURIComponent(z)+'.png',d,f});return o}
