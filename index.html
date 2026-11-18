@@ -146,13 +146,16 @@ button.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .row b.g3{background:color-mix(in srgb,var(--c) 66%,#fff);color:#06101f}
 .row b.g4{background:color-mix(in srgb,var(--c) 44%,#fff);color:#06101f}
 .setup .sub{font-size:15px;font-weight:800;color:var(--txt);letter-spacing:.01em}
-.pimg{position:absolute;z-index:1;right:1cqw;top:9cqw;width:64cqw;height:68cqw;object-fit:contain;object-position:50% 100%;pointer-events:none;filter:drop-shadow(0 3px 6px #0006)}
-.card.hasimg .ovr,.card.hasimg .pos{text-align:left;position:relative;z-index:2}
-.card.hasimg .ovr{margin-left:1cqw}
-.card.hasimg .nm{flex:0 0 auto;margin:auto -2cqw 0;position:relative;z-index:2;padding:1cqw 0}
 .mimg{width:84px;height:84px;object-fit:contain;border-radius:12px}
 @keyframes shine{0%,35%{background-position:130% 0}70%,100%{background-position:-60% 0}}
 .hero{display:block;width:min(560px,80%);height:auto;margin:0 auto 22px;filter:drop-shadow(0 10px 30px #000a);animation:in .5s}
+.pface{position:absolute;inset:0;z-index:3;border-radius:inherit;overflow:hidden;background:radial-gradient(circle at 50% 32%,#8a4cff 0%,#43208f 48%,#14072e 100%);box-shadow:inset 0 0 0 2px #b084ff88,inset 0 0 40px #7a3df055}
+.pface img{position:absolute;left:0;bottom:0;width:100%;height:94%;object-fit:contain;object-position:50% 100%;opacity:.88;filter:drop-shadow(0 6px 14px #0009)}
+.pface::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,#08040fd9,transparent);pointer-events:none}
+.pn{position:absolute;left:3cqw;right:3cqw;bottom:4cqw;z-index:2;text-align:center;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:max(11cqw,13px);line-height:1.05;text-shadow:0 2px 8px #000b}
+.pn span{display:block}
+.card.ld .back{animation:ldp .8s ease-in-out infinite alternate}
+@keyframes ldp{to{filter:brightness(1.5)}}
 </style></head><body>
 <header><h1>FC26 <span>PACK DRAFT</span></h1><div class="sub">Open a pack, pick one player, build your squad.</div></header>
 <div class="wrap" id="app"></div><div id="modal"></div>
@@ -181,21 +184,22 @@ function startGame(){NAMES=NM.slice(0,N).map((v,i)=>v.trim()||'Player '+(i+1));S
 function toSetup(){S={phase:'setup'};render()}
 function openPack(){const pool=ALL.filter(p=>S.tiers.includes(p.tier)&&!S.used.has(p.id));
  const pk=[];while(pk.length<PS&&pool.length){const w=pool.map(p=>(S.rb?Math.pow(S.rs,p.ovr-72):1));let r=Math.random()*w.reduce((a,b)=>a+b,0),i=0;while(i<w.length-1&&(r-=w[i])>0)i++;pk.push(pool.splice(i,1)[0])}
- S.pack=pk;S.pick=null;S.rev=new Set();S.fresh=true;S.stage=pk.some(p=>p.tier===0)?'wc':'full';render();if(S.stage==='wc')setTimeout(()=>confetti('wc'),350);else if(pk.some(p=>p.tier===1))setTimeout(()=>confetti('top'),350)}
+ pk.filter(p=>p.tier===0).forEach(p=>loadPhoto(p.name));S.pack=pk;S.pick=null;S.rev=new Set();S.fresh=true;S.stage=pk.some(p=>p.tier===0)?'wc':'full';render();if(S.stage==='wc')setTimeout(()=>confetti('wc'),350);else if(pk.some(p=>p.tier===1))setTimeout(()=>confetti('top'),350)}
 function pick(i){if(S.pick)return;const p=ALL[i];S.pick=p.id;S.used.add(p.id);S.pack.forEach(q=>S.rev.add(q.i));S.lists[S.cur].push(p);render()}
 function nextTurn(){S.cur=(S.cur+1)%NAMES.length;S.pack=null;S.pick=null;render()}
 function setCur(i){if(i===S.cur)return;S.cur=i;if(S.pick){S.pack=null;S.pick=null}render()}
 function card(p,i){const hid=p.tier===0&&!S.rev.has(p.i);const t='k'+p.tier+([0,1,3,4].includes(p.tier)?' sh':'')+(hid?' hid':'')+(!S.fresh||(p.tier===0&&S.stage==='full')?' static':'');const L=p.pos==='GK'?GKL:LBL;
  const cls=S.pick?(S.pick===p.id?'won':'dim'):'';
- return `<div id="c${p.i}" class="card ${t} ${cls} ${S.pick?'locked':''} ${IMGOK.has(p.name)?'hasimg':''}" style="--i:${i}" ${S.pick?'':`onclick="cardClick(${p.i})"`}>${hid?BACK:''}${p.tier===0?pimg(p.name):''}
+ return `<div id="c${p.i}" class="card ${t} ${cls} ${S.pick?'locked':''}" style="--i:${i}" ${S.pick?'':`onclick="cardClick(${p.i})"`}>${hid?BACK:''}
  <button class="eye" title="Inspect player" aria-label="Inspect ${esc(p.name)}" onclick="event.stopPropagation();inspect(${p.i})"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg></button>
  <div class="ovr">${p.ovr}</div><div class="pos">${p.pos}</div><div class="nm"><span>${esc(p.name)}</span></div>
  <div class="st">${p.st.map((v,k)=>`<span>${L[k]} <em>${v}</em></span>`).join('')}</div></div>`}
 const BACK=`<div class="back"><svg viewBox="0 0 100 100" width="78%" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3e8ff"/><stop offset="1" stop-color="#9b5cff"/></linearGradient></defs><g stroke="#b084ff" stroke-width=".6" opacity=".55">${Array.from({length:24},(_,k)=>{const a=k*Math.PI/12;return `<line x1="${50+14*Math.cos(a)}" y1="${50+14*Math.sin(a)}" x2="${50+48*Math.cos(a)}" y2="${50+48*Math.sin(a)}"/>`}).join('')}</g><circle cx="50" cy="50" r="34" fill="none" stroke="#b084ff" stroke-width="1" opacity=".6"/><circle cx="50" cy="50" r="24" fill="#12082a" stroke="url(#gg)" stroke-width="2"/><polygon points="50,28 55.3,42.7 70.9,43.2 58.6,52.8 63,67.8 50,59 37,67.8 41.4,52.8 29.1,43.2 44.7,42.7" fill="url(#gg)"/></svg><div class="wc">WORLD CLASS<br>PLAYER</div></div>`;
-const IMG_DIR='FC26 Photos/';const IMGOK=new Set();
-function pimg(n){return `<img class="pimg" alt="" data-n="${esc(n)}" src="${IMG_DIR}${encodeURIComponent(n.normalize('NFC'))}.png" onload="IMGOK.add(this.dataset.n);this.parentNode.classList.add('hasimg');fitNames()" onerror="imgFb(this)">`}
-function imgFb(el){if(!el.dataset.t){el.dataset.t=1;el.src=IMG_DIR+encodeURIComponent(el.dataset.n.normalize('NFD'))+'.png'}else el.remove()}
-function fitNames(){document.querySelectorAll('.card .nm').forEach(el=>{el.style.fontSize='';const sp=el.firstElementChild;let fs=parseFloat(getComputedStyle(el).fontSize),k=0;while(sp&&sp.offsetWidth>el.clientWidth&&fs>8&&k++<60){fs-=.5;el.style.fontSize=fs+'px'}})}
+const IMG_DIRS=['FC26 Photos/','FC26 photos/','images/'],IMGURL={},IMGP={};
+function imgUrls(n){const o=[];for(const d of IMG_DIRS)for(const f of new Set([n.normalize('NFC'),n.normalize('NFD')]))o.push(d+encodeURIComponent(f)+'.png');return o}
+function loadPhoto(n){if(IMGP[n])return IMGP[n];return IMGP[n]=new Promise(res=>{const u=imgUrls(n);let k=0;(function t(){if(k>=u.length){IMGURL[n]=null;console.warn('Photo not found:',u[0]);res(null);return}const im=new Image();im.onload=()=>{IMGURL[n]=u[k];res(u[k])};im.onerror=()=>{k++;t()};im.src=u[k]})()})}
+function photoFace(p,url){return `<div class="pface"><img alt="" src="${url}"><div class="pn"><span>${esc(p.name)}</span></div></div>`}
+function fitNames(){document.querySelectorAll('.card .nm,.pface .pn').forEach(el=>{el.style.fontSize='';const sp=el.firstElementChild;let fs=parseFloat(getComputedStyle(el).fontSize),k=0;while(sp&&sp.offsetWidth>el.clientWidth&&fs>8&&k++<60){fs-=.5;el.style.fontSize=fs+'px'}})}
 addEventListener('resize',()=>{if(S.phase==='play')fitNames()});
 function cardClick(i){const p=ALL[i];if(p.tier===0&&!S.rev.has(i)){reveal(i);return}if(S.stage==='wc')return;pick(i)}
 function showRest(){if(!S.pack||S.stage!=='wc')return;S.stage='full';S.fresh=true;render();if(S.pack.some(p=>p.tier===1))setTimeout(()=>confetti('top'),400)}
@@ -209,13 +213,19 @@ function confetti(kind){if(matchMedia('(prefers-reduced-motion: reduce)').matche
   for(const p of P){p.vy=Math.min(p.vy+.2,4.5);p.vx*=.985;p.x+=p.vx+Math.sin(p.s+f*.05)*.7;p.y+=p.vy;p.r+=p.vr;
    g.save();g.translate(p.x,p.y);g.rotate(p.r);g.scale(1,Math.cos(p.s+f*.12));g.fillStyle=p.c;g.fillRect(-p.w/2,-p.h/2,p.w,p.h);g.strokeStyle='#ffffff44';g.lineWidth=.8;g.strokeRect(-p.w/2,-p.h/2,p.w,p.h);g.restore()}
   if(f<260)requestAnimationFrame(t);else cv.remove()})()}
-function reveal(i){S.rev.add(i);const el=$('c'+i);if(!el)return;el.classList.add('turn');setTimeout(()=>{const b=el.querySelector('.back');if(b)b.remove();el.classList.remove('turn','hid');el.classList.add('unturn');setTimeout(()=>{el.classList.remove('unturn');el.classList.add('static');if(S.stage==='wc'&&S.pack.filter(q=>q.tier===0).every(q=>S.rev.has(q.i)))setTimeout(showRest,900)},350)},230)}
+function flipTo(el,swap,cb){el.classList.add('turn');setTimeout(()=>{swap();el.classList.remove('turn');el.classList.add('unturn');setTimeout(()=>{el.classList.add('static');el.classList.remove('unturn');cb&&cb()},340)},230)}
+async function reveal(i){const el=$('c'+i);if(!el||el.dataset.busy)return;el.dataset.busy=1;const p=ALL[i];el.classList.add('ld');
+ const url=await Promise.race([loadPhoto(p.name),new Promise(r=>setTimeout(()=>r(null),8000))]);el.classList.remove('ld');
+ const fin=()=>{S.rev.add(i);if(S.stage==='wc'&&S.pack&&S.pack.filter(q=>q.tier===0).every(q=>S.rev.has(q.i)))setTimeout(showRest,900)};
+ const front=()=>flipTo(el,()=>{el.querySelectorAll('.back,.pface').forEach(b=>b.remove());el.classList.remove('hid')},fin);
+ if(!url){const h=document.querySelector('.stage .hint');if(h)h.textContent='Photo not found: '+imgUrls(p.name)[0];front();return}
+ flipTo(el,()=>{const b=el.querySelector('.back');if(b)b.remove();el.insertAdjacentHTML('afterbegin',photoFace(p,url));fitNames()},()=>setTimeout(front,2000))}
 function bar(k,v){return `<div class="at"><span>${k}</span><div class="bar"><u style="width:${v}%;background:hsl(${Math.round(v*1.2)} 75% 50%)"></u></div><em>${v}</em></div>`}
 function inspect(i){const p=ALL[i];const stars=(n)=>'★'.repeat(n)+'☆'.repeat(5-n);
  const info=[['Tier',TN[p.tier]],['Position',p.pos],['Alt positions',p.alt||'—'],['Age',p.age],['Nation',p.nat],['League',p.lg],['Team',p.team],['Height',p.ht],['Weight',p.wt],['Preferred foot',p.foot],['Weak foot',stars(p.wf)],['Skill moves',stars(p.sm)]];
  const gk=p.gk?`<div class="grp"><h4>Goalkeeping</h4>${['Diving','Handling','Kicking','Positioning','Reflexes'].map((k,j)=>bar(k,p.gk[j])).join('')}</div>`:'';
  $('modal').innerHTML=`<div class="mbg" onclick="closeInspect()"><div class="mcard" onclick="event.stopPropagation()"><button class="x" onclick="closeInspect()" aria-label="Close">×</button>
- <div class="mh"><div class="movr">${p.ovr}</div>${p.tier===0?`<img class="mimg" alt="" data-n="${esc(p.name)}" src="${IMG_DIR}${encodeURIComponent(p.name.normalize('NFC'))}.png" onerror="imgFb(this)">`:''}<div><div class="mnm">${esc(p.name)}</div><div class="msub">${p.pos} · ${esc(p.team)}</div></div></div>
+ <div class="mh"><div class="movr">${p.ovr}</div>${p.tier===0&&IMGURL[p.name]?`<img class="mimg" alt="" src="${IMGURL[p.name]}">`:''}<div><div class="mnm">${esc(p.name)}</div><div class="msub">${p.pos} · ${esc(p.team)}</div></div></div>
  <div class="info">${info.map(([k,v])=>`<div><small>${k}</small><b>${esc(String(v))}</b></div>`).join('')}</div>
  <div class="grps">${gk}${GROUPS.map(([g,ks])=>`<div class="grp"><h4>${g}</h4>${ks.map(k=>bar(k,p.det[k])).join('')}</div>`).join('')}</div></div></div>`}
 function closeInspect(){$('modal').innerHTML=''}
