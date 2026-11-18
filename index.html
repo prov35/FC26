@@ -122,8 +122,8 @@ button.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .eye{z-index:2}
 .cards{perspective:1200px}
 .card.static{animation:none}
-.card.turn{animation:turnout .23s ease-in forwards;animation-delay:0s}
-.card.unturn{animation:turnin .33s ease-out;animation-delay:0s}
+.card.fo{animation:turnout .23s ease-in forwards;animation-delay:0s}
+.card.fi{animation:turnin .33s ease-out;animation-delay:0s}
 @keyframes turnout{to{transform:rotateY(90deg)}}
 @keyframes turnin{from{transform:rotateY(-90deg)}to{transform:none}}
 .card.hid{box-shadow:0 0 28px -2px #9b5cffaa}
@@ -149,17 +149,10 @@ button.b:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .mimg{width:84px;height:84px;object-fit:contain;border-radius:12px}
 @keyframes shine{0%,35%{background-position:130% 0}70%,100%{background-position:-60% 0}}
 .hero{display:block;width:min(560px,80%);height:auto;margin:0 auto 22px;filter:drop-shadow(0 10px 30px #000a);animation:in .5s}
-.pface{position:absolute;inset:0;z-index:3;border-radius:inherit;overflow:hidden;background:radial-gradient(circle at 50% 32%,#8a4cff 0%,#43208f 48%,#14072e 100%);box-shadow:inset 0 0 0 2px #b084ff88,inset 0 0 40px #7a3df055}
-.pface img{position:absolute;left:0;bottom:0;width:100%;height:100%;object-fit:contain;object-position:50% 100%;opacity:.93;transform:scale(1.06);transform-origin:50% 100%;filter:drop-shadow(0 6px 16px #000a)}
-.pface .rays{position:absolute;left:-60%;top:-40%;width:220%;height:200%;background:repeating-conic-gradient(from 0deg at 50% 50%,#ffffff22 0 5deg,transparent 5deg 15deg);-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 8%,transparent 55%);mask-image:radial-gradient(circle at 50% 50%,#000 8%,transparent 55%);animation:spin 26s linear infinite}
-.pface .halo{position:absolute;left:50%;top:46%;width:96%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:2px solid #d9bcff66;box-shadow:inset 0 0 50px #9b5cff99,0 0 46px #9b5cff66}
-.pface .spk{position:absolute;inset:0;background-image:radial-gradient(circle,#fff 0 1.4px,transparent 2px),radial-gradient(circle,#e9dcff 0 1px,transparent 1.6px);background-size:46px 58px,31px 37px;background-position:8px 12px,19px 30px;opacity:.55;animation:twk 2.4s ease-in-out infinite alternate}
-.pface .wcs{position:absolute;left:50%;top:6%;width:70%;transform:translateX(-50%);opacity:.22}
+.pface{position:absolute;inset:0;z-index:3;border-radius:inherit;overflow:hidden;background:linear-gradient(160deg,#c9a6ff,#4b2a96);box-shadow:inset 0 0 0 2px #b084ff88,inset 0 0 40px #7a3df055;--pf-h:85%}
+.pface img{position:absolute;left:0;bottom:0;width:100%;height:var(--pf-h);object-fit:contain;object-position:50% 100%;display:block;pointer-events:none;filter:drop-shadow(0 4px 10px #0007)}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes twk{to{opacity:.15}}
-.pface::after{content:"";position:absolute;left:0;right:0;bottom:0;height:34%;background:linear-gradient(to top,#08040fd9,transparent);pointer-events:none}
-.pn{position:absolute;left:3cqw;right:3cqw;bottom:4cqw;z-index:2;text-align:center;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#fff;font-size:max(11cqw,13px);line-height:1.05;text-shadow:0 2px 8px #000b}
-.pn span{display:block}
 .card.ld .back{animation:ldp .8s ease-in-out infinite alternate}
 @keyframes ldp{to{filter:brightness(1.5)}}
 </style></head><body>
@@ -201,11 +194,11 @@ function card(p,i){const hid=p.tier===0&&!S.rev.has(p.i);const t='k'+p.tier+([0,
  <div class="ovr">${p.ovr}</div><div class="pos">${p.pos}</div><div class="nm"><span>${esc(p.name)}</span></div>
  <div class="st">${p.st.map((v,k)=>`<span>${L[k]} <em>${v}</em></span>`).join('')}</div></div>`}
 const BACK=`<div class="back"><svg viewBox="0 0 100 100" width="78%" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3e8ff"/><stop offset="1" stop-color="#9b5cff"/></linearGradient></defs><g stroke="#b084ff" stroke-width=".6" opacity=".55">${Array.from({length:24},(_,k)=>{const a=k*Math.PI/12;return `<line x1="${50+14*Math.cos(a)}" y1="${50+14*Math.sin(a)}" x2="${50+48*Math.cos(a)}" y2="${50+48*Math.sin(a)}"/>`}).join('')}</g><circle cx="50" cy="50" r="34" fill="none" stroke="#b084ff" stroke-width="1" opacity=".6"/><circle cx="50" cy="50" r="24" fill="#12082a" stroke="url(#gg)" stroke-width="2"/><polygon points="50,28 55.3,42.7 70.9,43.2 58.6,52.8 63,67.8 50,59 37,67.8 41.4,52.8 29.1,43.2 44.7,42.7" fill="url(#gg)"/></svg><div class="wc">WORLD CLASS<br>PLAYER</div></div>`;
-const IMG_DIRS=['FC26 Photos/','FC26 photos/','images/'],IMGURL={},IMGP={};let IMGHIT=null;
+const IMG_DIRS=['FC Photos/','FC photos/','fc photos/','FC26 Photos/','FC26 photos/','images/'],IMGURL={},IMGP={};let IMGHIT=null;
 function imgUrls(n){const fm=[n,n.replace(/ /g,'_'),n.replace(/ /g,'_').replace(/\./g,'')];const dirs=IMGHIT?[IMGHIT.d,...IMG_DIRS.filter(x=>x!==IMGHIT.d)]:IMG_DIRS;const fo=IMGHIT?[IMGHIT.f,...[0,1,2].filter(x=>x!==IMGHIT.f)]:[0,1,2];const o=[];for(const d of dirs)for(const f of fo)for(const z of new Set([fm[f].normalize('NFC'),fm[f].normalize('NFD')]))o.push({u:d+encodeURIComponent(z)+'.png',d,f});return o}
 function loadPhoto(n){if(IMGP[n])return IMGP[n];return IMGP[n]=new Promise(res=>{const u=imgUrls(n);let k=0;(function t(){if(k>=u.length){IMGURL[n]=null;console.warn('Photo not found:',u[0].u);res(null);return}const im=new Image();im.onload=()=>{IMGURL[n]=u[k].u;IMGHIT={d:u[k].d,f:u[k].f};res(u[k].u)};im.onerror=()=>{k++;t()};im.src=u[k].u})()})}
-function photoFace(p,url){return `<div class="pface"><div class="rays"></div><div class="halo"></div><div class="spk"></div><svg class="wcs" viewBox="0 0 100 100" aria-hidden="true"><polygon points="50,6 61,38 95,38 67,58 78,92 50,71 22,92 33,58 5,38 39,38" fill="none" stroke="#e9dcff" stroke-width="1.2"/></svg><img alt="" src="${url}"><div class="pn"><span>${esc(p.name)}</span></div></div>`}
-function fitNames(){document.querySelectorAll('.card .nm,.pface .pn').forEach(el=>{el.style.fontSize='';const sp=el.firstElementChild;let fs=parseFloat(getComputedStyle(el).fontSize),k=0;while(sp&&sp.offsetWidth>el.clientWidth&&fs>8&&k++<60){fs-=.5;el.style.fontSize=fs+'px'}})}
+function photoFace(p,url){return `<div class="pface"><img alt="${esc(p.name)}" src="${url}"></div>`}
+function fitNames(){document.querySelectorAll('.card .nm').forEach(el=>{el.style.fontSize='';const sp=el.firstElementChild;let fs=parseFloat(getComputedStyle(el).fontSize),k=0;while(sp&&sp.offsetWidth>el.clientWidth&&fs>8&&k++<60){fs-=.5;el.style.fontSize=fs+'px'}})}
 addEventListener('resize',()=>{if(S.phase==='play')fitNames()});
 function cardClick(i){const p=ALL[i];if(p.tier===0&&!S.rev.has(i)){reveal(i);return}if(S.stage==='wc')return;pick(i)}
 function showRest(){if(!S.pack||S.stage!=='wc')return;S.stage='full';S.fresh=true;render();if(S.pack.some(p=>p.tier===1))setTimeout(()=>confetti('top'),400)}
@@ -219,13 +212,16 @@ function confetti(kind){if(matchMedia('(prefers-reduced-motion: reduce)').matche
   for(const p of P){p.vy=Math.min(p.vy+.2,4.5);p.vx*=.985;p.x+=p.vx+Math.sin(p.s+f*.05)*.7;p.y+=p.vy;p.r+=p.vr;
    g.save();g.translate(p.x,p.y);g.rotate(p.r);g.scale(1,Math.cos(p.s+f*.12));g.fillStyle=p.c;g.fillRect(-p.w/2,-p.h/2,p.w,p.h);g.strokeStyle='#ffffff44';g.lineWidth=.8;g.strokeRect(-p.w/2,-p.h/2,p.w,p.h);g.restore()}
   if(f<260)requestAnimationFrame(t);else cv.remove()})()}
-function flipTo(el,swap,cb){el.classList.add('turn');setTimeout(()=>{swap();el.classList.remove('turn');el.classList.add('unturn');setTimeout(()=>{el.classList.add('static');el.classList.remove('unturn');cb&&cb()},340)},230)}
-async function reveal(i){const el=$('c'+i);if(!el||el.dataset.busy)return;el.dataset.busy=1;const p=ALL[i];el.classList.add('ld');
+function flipTo(el,swap,cb){el.classList.add('fo');setTimeout(()=>{swap();el.classList.remove('fo');el.classList.add('fi');setTimeout(()=>{el.classList.add('static');el.classList.remove('fi');cb&&cb()},340)},230)}
+async function reveal(i){const el=$('c'+i);if(!el)return;
+ if(el.dataset.busy){if(el._skip)el._skip();return}   // 2nd click while the photo is showing -> flip to stats early
+ el.dataset.busy=1;const p=ALL[i];el.classList.add('ld');
  const url=await Promise.race([loadPhoto(p.name),new Promise(r=>setTimeout(()=>r(null),8000))]);el.classList.remove('ld');
  const fin=()=>{S.rev.add(i);if(S.stage==='wc'&&S.pack&&S.pack.filter(q=>q.tier===0).every(q=>S.rev.has(q.i)))setTimeout(showRest,900)};
- const front=()=>flipTo(el,()=>{el.querySelectorAll('.back,.pface').forEach(b=>b.remove());el.classList.remove('hid')},fin);
+ let done=false,timer=null;
+ const front=()=>{if(done)return;done=true;clearTimeout(timer);el._skip=null;flipTo(el,()=>{el.querySelectorAll('.back,.pface').forEach(b=>b.remove());el.classList.remove('hid')},fin)};
  if(!url){const h=document.querySelector('.stage .hint');if(h)h.textContent='Photo not found: '+imgUrls(p.name)[0].u;front();return}
- flipTo(el,()=>{const b=el.querySelector('.back');if(b)b.remove();el.insertAdjacentHTML('afterbegin',photoFace(p,url));fitNames()},()=>setTimeout(front,2000))}
+ flipTo(el,()=>{const b=el.querySelector('.back');if(b)b.remove();el.insertAdjacentHTML('afterbegin',photoFace(p,url))},()=>{el._skip=front;timer=setTimeout(front,3000)})}
 function bar(k,v){return `<div class="at"><span>${k}</span><div class="bar"><u style="width:${v}%;background:hsl(${Math.round(v*1.2)} 75% 50%)"></u></div><em>${v}</em></div>`}
 function inspect(i){const p=ALL[i];const stars=(n)=>'★'.repeat(n)+'☆'.repeat(5-n);
  const info=[['Tier',TN[p.tier]],['Position',p.pos],['Alt positions',p.alt||'—'],['Age',p.age],['Nation',p.nat],['League',p.lg],['Team',p.team],['Height',p.ht],['Weight',p.wt],['Preferred foot',p.foot],['Weak foot',stars(p.wf)],['Skill moves',stars(p.sm)]];
